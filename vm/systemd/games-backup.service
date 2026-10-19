@@ -1,0 +1,8 @@
+[Unit]
+Description=Periodic backup of running game worlds
+
+[Service]
+Type=oneshot
+Nice=15
+IOSchedulingClass=idle
+ExecStart=/usr/local/bin/game-backup.sh running auto

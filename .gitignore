@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.zip
+.venv/
+.python_packages/
+local.settings.json
+# Generated passwords from provision.ps1 (never commit these).
+*.secrets.json
+# Env files on the VM contain game settings; only templates belong here.
+settings.env
+
+# Your deployment settings and generated passwords
+gameservers.config.json
+*.secrets.json

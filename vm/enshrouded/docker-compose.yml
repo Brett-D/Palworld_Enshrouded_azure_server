@@ -1,0 +1,25 @@
+services:
+  enshrouded:
+    image: mornedhels/enshrouded-server:latest
+    container_name: enshrouded
+    hostname: enshrouded
+    # Server name, slots, chat and difficulty come from the portal via settings.env.
+    # Roles (join passwords and permissions) are written into enshrouded_server.json
+    # by game-apply-settings.sh, so no SERVER_ROLE_* variables belong here.
+    env_file:
+      - path: ./settings.env
+        required: false
+    restart: unless-stopped
+    stop_grace_period: 90s
+    # Docker's default CPU weight is below ordinary system services; give the game priority.
+    # /dev/ntsync is added by docker-compose.override.yml when the kernel supports it.
+    cpu_shares: 4096
+    ports:
+      - "15637:15637/udp"
+    volumes:
+      - ./game:/opt/enshrouded
+    environment:
+      PUID: "4711"
+      PGID: "4711"
+      SERVER_QUERYPORT: "15637"
+      TZ: "__TIMEZONE__"

@@ -1,0 +1,32 @@
+{
+  "subscriptionId": "00000000-0000-0000-0000-000000000000",
+  "location": "westus2",
+  "resourceGroup": "gameservers-rg",
+  "storageAccount": "gameserversdata123",
+  "functionApp": "my-gameservers-portal",
+  "timezone": "UTC",
+  "games": ["palworld", "enshrouded"],
+  "vm": {
+    "name": "gameservers-vm",
+    "size": "Standard_D4as_v7",
+    "image": "Canonical:ubuntu-26_04-lts:minimal:latest",
+    "osDiskGb": 64,
+    "adminUser": "gameadmin",
+    "sshKeyPath": "~/.ssh/gameservers_key",
+    "sshAllowedIp": "auto"
+  },
+  "power": {
+    "idleMinutes": 20,
+    "maxUptimeHours": 8,
+    "nightlyShutdownUtc": "0900"
+  },
+  "budget": {
+    "monthlyAmount": 30,
+    "alertEmail": ""
+  },
+  "palworld": {
+    "maxPlayers": 8,
+    "description": "Private Palworld server"
+  },
+  "scrubTerms": []
+}

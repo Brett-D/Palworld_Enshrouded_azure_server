@@ -1,0 +1,9 @@
+[Unit]
+Description=Start, stop and idle-check game servers
+After=docker.service network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+Nice=10
+ExecStart=/usr/local/bin/games-reconcile.sh

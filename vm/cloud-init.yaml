@@ -1,0 +1,36 @@
+#cloud-config
+# First boot for the game server VM (Ubuntu 26.04 LTS; passed as --custom-data to az vm create).
+# The manager scripts, systemd units and compose files are installed afterwards by azure/provision.ps1
+# and azure/deploy-vm.ps1.
+package_update: true
+package_upgrade: true
+packages:
+  - ca-certificates
+  - curl
+  - jq
+  - docker.io
+  - docker-compose-v2
+write_files:
+  # ntsync (kernel 6.14+) lets Wine/Proton games such as Enshrouded synchronize threads in the kernel
+  # instead of through wineserver, which cuts CPU overhead and latency.
+  - path: /etc/modules-load.d/ntsync.conf
+    content: |
+      ntsync
+  # Game servers use UDP; larger socket buffers avoid dropped packets during traffic bursts.
+  # Named to sort after the image's own 99-cloudimg-udp.conf, which would otherwise override it.
+  - path: /etc/sysctl.d/99-zz-gameservers.conf
+    content: |
+      net.core.rmem_max = 8388608
+      net.core.wmem_max = 8388608
+      net.core.rmem_default = 1048576
+      net.core.wmem_default = 1048576
+      net.core.netdev_max_backlog = 5000
+runcmd:
+  - modprobe ntsync || true
+  - sysctl --system
+  - systemctl enable --now docker
+  - mkdir -p /opt/palworld/data /opt/enshrouded/game
+  - chown -R 1000:1000 /opt/palworld/data
+  - chown -R 4711:4711 /opt/enshrouded/game
+  - fallocate -l 4G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+  - echo '/swapfile none swap sw 0 0' >> /etc/fstab

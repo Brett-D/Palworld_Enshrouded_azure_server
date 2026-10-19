@@ -1,0 +1,34 @@
+services:
+  palworld:
+    image: thijsvanloef/palworld-server-docker:latest
+    container_name: palworld
+    # Game settings (server name, rates, PvP, ...) come from the portal via settings.env.
+    env_file:
+      - path: ./settings.env
+        required: false
+    restart: unless-stopped
+    stop_grace_period: 30s
+    # Docker's default CPU weight is below ordinary system services; give the game priority.
+    cpu_shares: 4096
+    ports:
+      - "8211:8211/udp"
+      - "127.0.0.1:8212:8212/tcp"
+      - "127.0.0.1:25575:25575/tcp"
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      PORT: "8211"
+      PLAYERS: "__MAX_PLAYERS__"
+      ENABLE_PERF_THREADING_ARGS: "true"
+      RCON_ENABLED: "true"
+      RCON_PORT: "25575"
+      REST_API_ENABLED: "true"
+      REST_API_PORT: "8212"
+      COMMUNITY: "false"
+      SERVER_DESCRIPTION: "__DESCRIPTION__"
+      SERVER_PASSWORD: "__SERVER_PASSWORD__"
+      ADMIN_PASSWORD: "__ADMIN_PASSWORD__"
+      UPDATE_ON_BOOT: "true"
+      TZ: "__TIMEZONE__"
+    volumes:
+      - /opt/palworld/data:/palworld

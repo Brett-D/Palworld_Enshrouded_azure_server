@@ -1,0 +1,13 @@
+{
+  "rules": [
+    {
+      "enabled": true,
+      "name": "delete-backups-after-14-days",
+      "type": "Lifecycle",
+      "definition": {
+        "actions": { "baseBlob": { "delete": { "daysAfterModificationGreaterThan": 14 } } },
+        "filters": { "blobTypes": ["blockBlob"], "prefixMatch": ["backups/"] }
+      }
+    }
+  ]
+}
